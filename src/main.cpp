@@ -4,12 +4,33 @@
 #include <list>
 #include <iostream>
 #include <unistd.h> // for sleep
-
+#include "pump.h"
+#include "plant.h"
 #define CHIP_NAME "gpiochip0"
 
 using namespace std;
 
 int main(){
+
+    Relais relaisSativa(16, "Relais1");
+    Sensor sensorSativa1(22);
+    Sensor sensorSativa2(23);
+    list<Sensor> sativaSensors;
+    sativaSensors.push_back(sensorSativa1);
+    sativaSensors.push_back(sensorSativa2);
+    Pump sativaPump(relaisSativa);
+    Plant sativa(
+        50,
+        sativaPump,
+        sativaSensors
+    );
+
+    while(true){
+        if(sativa.hydrationIsNecessary()){
+            sativa.hydrate();
+        }
+    }
+
     list<Relais> relaisList;
     // relaisList.push_back(Relais(0, "Relais 0"));
     // relaisList.push_back(Relais(1, "Relais 1"));
